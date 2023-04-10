@@ -7,35 +7,35 @@ import os
 from datetime import datetime
 
 # For temperature sensor
-from smbus2 import SMBus
-from mlx90614 import MLX90614
+# from smbus2 import SMBus
+# from mlx90614 import MLX90614
 import time
-import board
-import digitalio
-import adafruit_character_lcd.character_lcd as characterlcd
+# import board
+# import digitalio
+# import adafruit_character_lcd.character_lcd as characterlcd
 
 
 lcd_columns = 16
 lcd_rows = 2
 
-lcd_rs = digitalio.DigitalInOut(board.D26)
-lcd_en = digitalio.DigitalInOut(board.D19)
-lcd_d4 = digitalio.DigitalInOut(board.D13)
-lcd_d5 = digitalio.DigitalInOut(board.D6)
-lcd_d6 = digitalio.DigitalInOut(board.D5)
-lcd_d7 = digitalio.DigitalInOut(board.D11)
+# lcd_rs = digitalio.DigitalInOut(board.D26)
+# lcd_en = digitalio.DigitalInOut(board.D19)
+# lcd_d4 = digitalio.DigitalInOut(board.D13)
+# lcd_d5 = digitalio.DigitalInOut(board.D6)
+# lcd_d6 = digitalio.DigitalInOut(board.D5)
+# lcd_d7 = digitalio.DigitalInOut(board.D11)
 
 
-lcd = characterlcd.Character_LCD_Mono(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6,
-                                      lcd_d7, lcd_columns, lcd_rows)
-bus = SMBus(1)
-sensor = MLX90614(bus, address=0x5A)
+# lcd = characterlcd.Character_LCD_Mono(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6,
+#                                       lcd_d7, lcd_columns, lcd_rows)
+# bus = SMBus(1)
+# sensor = MLX90614(bus, address=0x5A)
 
-lcd.clear()
+# lcd.clear()
 
-lcd.message = "Welcome"
-time.sleep(1)
-lcd.clear()
+# lcd.message = "Welcome"
+# time.sleep(1)
+# lcd.clear()
 
 
 
@@ -45,7 +45,7 @@ video_capture = cv2.VideoCapture(0)
 known_faces_names = []
 known_face_encoding = []
 
-data_dir = "data/"
+data_dir = "D:\Study\VIT-AP Study Materials\Semester 4\ECS Project Jahnavi\DoorSecuritySystem_ECSProject\DoorLockSystem_FacialRecog\src\RunModel\images/"
 extensions = [".png", ".jpg"]
 for image in os.listdir(data_dir):
     for extension in extensions:
@@ -73,8 +73,8 @@ f = open(current_date + ".csv", 'w+', newline= '')
 lnwriter = csv.writer(f)
 
 while students:
-    lcd.clear()
-    lcd.message = "Taking\nAttendance..."
+    # lcd.clear()
+    # lcd.message = "Taking\nAttendance..."
     
     _, frame = video_capture.read()
     small_frame = cv2.resize(frame, (0,0), fx=0.25, fy=0.25)
@@ -97,50 +97,50 @@ while students:
                     
                     students.remove(name)
                     print(name + " - Attendance Marked")
-                    lcd.clear()
-                    lcd.message = name + "\nPresent"
+                    # lcd.clear()
+                    # lcd.message = name + "\nPresent"
                     time.sleep(3)
                     print("Check Temperature")
-                    lcd.clear()
-                    lcd.message = "Check\nTemperature"
+                    # lcd.clear()
+                    # lcd.message = "Check\nTemperature"
                     time.sleep(3)
-                    lcd.clear()
-                    lcd.message = "Press Enter\nFor Temperature"
+                    # lcd.clear()
+                    # lcd.message = "Press Enter\nFor Temperature"
                     
                     check_temp = input("Hit enter to capture temperature")
-                    if check_temp == "":
-                        lcd.clear()
-                        temp = sensor.get_object_1()
-                        if (temp <= 37):
-                            lcd.message = "Temp: " + str(temp) + " \n" + "Safe" 
-                        else:
-                            lcd.message = "Temp: " + str(temp) + " \n" + "Not Safe"
-                            time.sleep(1)
-                            lcd.clear()
-                            lcd.message = "Please Wear Mask"
+                    # if check_temp == "":
+                        # lcd.clear()
+                        # temp = sensor.get_object_1()
+                        # if (temp <= 37):
+                        #     lcd.message = "Temp: " + str(temp) + " \n" + "Safe" 
+                        # else:
+                        #     lcd.message = "Temp: " + str(temp) + " \n" + "Not Safe"
+                        #     time.sleep(1)
+                        #     lcd.clear()
+                        #     lcd.message = "Please Wear Mask"
                     
                     print("Students who are yet to mark their attendance - " + str(students))
                     
                     current_time = now.strftime("%H:%M")
                     lnwriter.writerow([name, current_time])
                     time.sleep(2)
-                    lcd.clear()
-                else:
-                    lcd.clear()
-                    lcd.message = "Attendance\nalready marked"
+                    # lcd.clear()
+                # else:
+                    # lcd.clear()
+                    # lcd.message = "Attendance\nalready marked"
     cv2.imshow("attendance system", frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
 
-lcd.clear()
+# lcd.clear()
 time.sleep(1)
-lcd.message = "All Students\nMarkedAttendance"
+# lcd.message = "All Students\nMarkedAttendance"
 time.sleep(2)
-lcd.clear()
-lcd.message = "Turning Off..."
+# lcd.clear()
+# lcd.message = "Turning Off..."
 time.sleep(2)
-lcd.clear()
+# lcd.clear()
 video_capture.release()
 cv2.destroyAllWindows()
 f.close()

@@ -5,7 +5,7 @@ name = "hashu"
 cam = cv2.VideoCapture(0)
 
 cv2.namedWindow("Press space to take a photo", cv2.WINDOW_NORMAL)
-cv2.resizeWindow("Press space to take a photo", 500, 300)
+# cv2.resizeWindow("Press space to take a photo", 1280, 720)
 
 img_counter = 0
 
@@ -21,13 +21,12 @@ while True:
         print("Escape hit, closing...")
         break
     elif k%256 == 32:
-        img_name = "data/" + name + ".jpg"
-        cv2.imwrite(img_name, frame)
+        img_name = name + ".jpg"
+        path = "D:\Study\VIT-AP Study Materials\Semester 4\ECS Project Jahnavi\DoorSecuritySystem_ECSProject\DoorLockSystem_FacialRecog\\trainingData/" + img_name
+        cv2.imwrite(path, frame)
         print("{} written!".format(img_name))
         img_counter += 1
         
-cam.release()
+cam.release()        
 
 cv2.destroyAllWindows()
-        
-        

@@ -10,7 +10,7 @@ video_capture = cv2.VideoCapture(0)
 known_faces_names = []
 known_face_encoding = []
 
-data_dir = "data/"
+data_dir = "D:\Study\VIT-AP Study Materials\Semester 4\ECS Project Jahnavi\DoorSecuritySystem_ECSProject\DoorLockSystem_FacialRecog\\trainingData/"
 extensions = [".png", ".jpg"]
 for image in os.listdir(data_dir):
     for extension in extensions:
@@ -21,7 +21,8 @@ for image in os.listdir(data_dir):
             student_image = face_recognition.load_image_file(data_dir + image)
             student_image_encoding = face_recognition.face_encodings(student_image)[0]
             known_face_encoding.append(student_image_encoding)
-            #print(name) # prints the basename of the file without extension
+
+#print(name) # prints the basename of the file without extension
 #print(known_face_names)
             
 students = known_faces_names.copy()
