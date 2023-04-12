@@ -3,10 +3,9 @@ import face_recognition as fr
 import time
 import os
 
-# Array to hold all training images
 training_img = []
-# Array to hold image encodings
 image_encodings = []
+
 
 def image_collection():
     print("Enter image collection mode for training...")
@@ -14,7 +13,6 @@ def image_collection():
     cv.namedWindow("Press Space to take a Photo", cv.WINDOW_NORMAL)
 
     img_counter = 0
-
     while True:
         path_to_image = os.getcwd()
         _, frame = cam.read()
@@ -28,7 +26,7 @@ def image_collection():
             print("Escaping Image Collection Mode")
             break
         elif key == ord(' '):
-            path_to_image += f"\\test\img-data\\training-img-{img_counter}.jpg"
+            path_to_image += "\src\user_img\\training-img.jpg"
             cv.imwrite(path_to_image, frame)
             print(f"Image #{img_counter + 1} is written !")
             img_counter += 1
@@ -36,6 +34,26 @@ def image_collection():
     print("Exiting Image Collection mode...")
     cam.release()
     cv.destroyAllWindows()
+
+
+
+def training_mode():
+    print("Now starting Training Mode")
+    path = os.getcwd()
+
+    print("Loading images for training...")
+
+    for img in os.listdir(path):
+        if (img.endswith(".jpg")):
+            name = img.split(".img")[0]
+            training_img.append(name)
+
+            image = fr.load_image_file(path + "\src\user_img/" + img)    
+            encoding = fr.face_encodings(image)
+            image_encodings.append(encoding)
+    
+    print("Training Done !")
+
 
 
 def takePhoto():
@@ -56,7 +74,7 @@ def takePhoto():
             break
         elif key == ord(' '):
             img_name = "TempPhoto.jpg"
-            path = os.getcwd() + "\\test\photo/" + img_name
+            path = os.getcwd() + "\src\unknown_img/" + img_name
             cv.imwrite(path, frame)
             counter += 1
 
@@ -68,47 +86,28 @@ def takePhoto():
     compareFaces(frame)
 
 
-def training_mode():
-    print("Now starting Training Mode")
-    path = os.getcwd()
-    # Goes till DoorLockSystem_FacialRecog
-
-    print("Loading images for training...")
-
-    for img in os.listdir(path):
-        if (img.endswith(".jpg")):
-            name = img.split(".img")[0]
-            training_img.append(name)
-
-            image = fr.load_image_file(path + "\\test\img-data/" + img)    
-            encoding = fr.face_encodings(image)[0]
-            image_encodings.append(encoding)
-    
-    print("Training Done !")
-
 def compareFaces(image):
     print("Trying to recognize faces...\n")
-    # face_locations_unknown = fr.face_locations(image, model="cnn")
     face_encoding_unknown = fr.face_encodings(image)[0]
 
-    face_trained = fr.load_image_file(os.getcwd() + "\\test\img-data\\training-img-0.jpg")
+    face_trained = fr.load_image_file(os.getcwd() + "\src\user-img\\training-img.jpg")
+    
+    # Add loop to include all encodings into a single tuple
+
     face_trained_encoding = fr.face_encodings(face_trained)[0]
 
-    matches = fr.compare_faces([face_encoding_unknown], face_trained_encoding)
-
-    # for enc in image_encodings:
-    #     matches = fr.compare_faces(face_encoding_unknown, enc)
-    #     distance = fr.face_distance(face_encoding_unknown, enc)
-    #     best_match_index = np.argmin(distance)
-    #     print(best_match_index)
+    matches = fr.compare_faces([face_encoding_unknown], face_trained_encoding, 0.9)
         
     if matches[0] == True:
         print("Access Granted !")
     else:
         print("Not recognized.")
 
+
 if __name__ == '__main__':
-    # training_mode()
+    image_collection()
+    training_mode()
     takePhoto()
-    # compareFaces()
-    # image_collection()
+
+
+

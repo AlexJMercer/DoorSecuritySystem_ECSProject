@@ -64,7 +64,6 @@ students = known_faces_names.copy()
 face_locations = []
 face_encodings = []
 face_names = []
-s = True
 
 now = datetime.now()
 current_date = now.strftime("%Y-%m-%d")
@@ -79,7 +78,7 @@ while students:
     _, frame = video_capture.read()
     small_frame = cv2.resize(frame, (0,0), fx=0.25, fy=0.25)
     rgb_small_frame = small_frame[:,:,::-1]
-    if s:
+    if True:
         face_locations = face_recognition.face_locations(rgb_small_frame)
         face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
         face_names = []
