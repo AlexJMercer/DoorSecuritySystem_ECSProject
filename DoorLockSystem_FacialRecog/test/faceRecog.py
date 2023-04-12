@@ -108,7 +108,7 @@ def compareFaces(image):
         print("Not recognized.")
 
 if __name__ == '__main__':
-    training_mode()
+    # training_mode()
     takePhoto()
     # compareFaces()
     # image_collection()
