@@ -32,7 +32,7 @@ class face_recog:
                 print("Escaping Image Collection Mode")
                 break
             elif key == ord(' '):
-                path_to_image += "\src\user_img\\training-img.jpg"
+                path_to_image += "\\src\\user_img\\training-img.jpg"
                 cv.imwrite(path_to_image, frame)
                 print(f"Image #{img_counter + 1} is written !")
                 img_counter += 1
@@ -54,7 +54,7 @@ class face_recog:
                 name = img.split(".img")[0]
                 training_img.append(name)
 
-                image = fr.load_image_file(path + "\src\user_img/" + img)    
+                image = fr.load_image_file(path + "\\src\\user_img\\" + img)    
                 encoding = fr.face_encodings(image)
                 image_encodings.append(encoding)
         
@@ -80,7 +80,7 @@ class face_recog:
                 break
             elif key == ord(' '):
                 img_name = "TempPhoto.jpg"
-                path = os.getcwd() + "\src\unknown_img/" + img_name
+                path = os.getcwd() + "\\src\\unknown_img\\" + img_name
                 cv.imwrite(path, frame)
                 counter += 1
 
@@ -94,9 +94,10 @@ class face_recog:
 
     def compareFaces(image):
         print("Trying to recognize faces...\n")
+        path = os.getcwd()
         face_encoding_unknown = fr.face_encodings(image)[0]
 
-        face_trained = fr.load_image_file(os.getcwd() + "\src\user-img\\training-img.jpg")
+        face_trained = fr.load_image_file(path + "\\src\\user-img\\training-img.jpg")
         
         # Add loop to include all encodings into a single tuple
         
