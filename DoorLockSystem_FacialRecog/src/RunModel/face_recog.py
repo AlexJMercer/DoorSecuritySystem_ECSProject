@@ -3,6 +3,7 @@ import face_recognition as fr
 import time
 import os
 
+faceAuth = False
 training_img = []
 image_encodings = []
 
@@ -10,9 +11,12 @@ class face_recog:
     def train_img_arr():
         return training_img
     
+    
     def train_img_encode():
         return image_encodings
 
+    
+    
     def image_collection():
         print("Enter image collection mode for training...")
         cam = cv.VideoCapture(0)     
@@ -32,7 +36,8 @@ class face_recog:
                 print("Escaping Image Collection Mode")
                 break
             elif key == ord(' '):
-                path_to_image += "\\src\\user_img\\training-img.jpg"
+                image_name = f"training-{img_counter}-img.jpg"
+                path_to_image += f"/DoorLockSystem_FacialRecog/src/user_img/" + image_name
                 cv.imwrite(path_to_image, frame)
                 print(f"Image #{img_counter + 1} is written !")
                 img_counter += 1
@@ -42,10 +47,9 @@ class face_recog:
         cv.destroyAllWindows()
 
 
-
     def training_mode():
         print("Now starting Training Mode")
-        path = os.getcwd()
+        path = os.getcwd() + "/DoorLockSystem_FacialRecog/src/user_img/"
 
         print("Loading images for training...")
 
@@ -54,7 +58,7 @@ class face_recog:
                 name = img.split(".img")[0]
                 training_img.append(name)
 
-                image = fr.load_image_file(path + "\\src\\user_img\\" + img)    
+                image = fr.load_image_file(path + img)    
                 encoding = fr.face_encodings(image)
                 image_encodings.append(encoding)
         
@@ -62,6 +66,7 @@ class face_recog:
 
 
 
+    
     def takePhoto():
         print("Opening Camera to take Photo...")
         cam = cv.VideoCapture(0)
@@ -80,7 +85,7 @@ class face_recog:
                 break
             elif key == ord(' '):
                 img_name = "TempPhoto.jpg"
-                path = os.getcwd() + "\\src\\unknown_img\\" + img_name
+                path = os.getcwd() + "/DoorLockSystem_FacialRecog/src/unknown_img/" + img_name
                 cv.imwrite(path, frame)
                 counter += 1
 
@@ -93,20 +98,44 @@ class face_recog:
 
 
     def compareFaces(image):
+        global faceAuth
+
         print("Trying to recognize faces...\n")
-        path = os.getcwd()
         face_encoding_unknown = fr.face_encodings(image)[0]
 
-        face_trained = fr.load_image_file(path + "\\src\\user-img\\training-img.jpg")
-        
+        if image_encodings == []:
+            face_recog.build_arrays()
+
+        matches = []
+
         # Add loop to include all encodings into a single tuple
-        
+        for enc in image_encodings:
+            matches.append(fr.compare_faces(face_encoding_unknown, enc, 0.9))
 
-        face_trained_encoding = fr.face_encodings(face_trained)[0]
+        for match in matches:
+            for m in match:
+                if m == True:
+                    faceAuth = True
+                    break
 
-        matches = fr.compare_faces([face_encoding_unknown], face_trained_encoding, 0.9)
-            
-        if matches[0] == True:
+        if faceAuth == True:
             print("Access Granted !")
         else:
             print("Not recognized.")
+
+
+
+    def build_arrays():
+        global training_img
+        global image_encodings
+
+        path = os.getcwd() + "/DoorLockSystem_FacialRecog/src/user_img/"
+
+        for img in os.listdir(path):
+            if (img.endswith(".jpg")):
+                name = img.split(".img")[0]
+                training_img.append(name)
+
+                image = fr.load_image_file(path + img)    
+                encoding = fr.face_encodings(image)
+                image_encodings.append(encoding)

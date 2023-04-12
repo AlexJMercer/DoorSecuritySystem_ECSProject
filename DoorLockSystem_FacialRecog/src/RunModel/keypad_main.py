@@ -65,9 +65,10 @@ class keypad:
     def check(Code):
         global Password
         global auth_token
+        global counter
         if Password == Code:
             lcd.clear()
-            lcd.message = 'Khul jaa sim sim'
+            lcd.message = 'Welcome !!'
             GPIO.output(Lock, GPIO.LOW)
             time.sleep(10)
             GPIO.output(Lock, GPIO.HIGH)
@@ -75,7 +76,11 @@ class keypad:
             auth_token = True
         else:
             lcd.clear()
-            lcd.message = 'GND MRA'
+            lcd.message = 'Wrong Password'
+            time.sleep(5)
+            lcd.clear()
+            counter = 1
+
         
 
     def readLine(line, characters):
@@ -127,15 +132,14 @@ class keypad:
         time.sleep(5)
         lcd.clear()
         try:
-            while not auth_token:
+            while not auth_token and counter != 1:
                 keypad.readLine(L1, ["1","2","3"])
                 keypad.readLine(L2, ["4","5","6"])
                 keypad.readLine(L3, ["7","8","9"])
                 keypad.readLine(L4, ["*","0","#"])
                 time.sleep(0.3)
-                # if auth_token == True:
-                #     break
         except KeyboardInterrupt:
             print("\nApplication stopped!")
             GPIO.cleanup()
-        return
+
+            

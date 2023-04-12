@@ -18,18 +18,20 @@ if __name__ == '__main__':
         choice = int(input())
         if choice == 1:
             # Enter password to confirm identity
-            # keypad.__init__()
-            keypad.getDeets()
-            if keypad.getAuthToken() == True:
-                face_recog.image_collection()
-                face_recog.training_mode()
-            else:
-                print("Wrong Password.")
-                break
+            # keypad.getDeets()
+            # if keypad.getAuthToken() == True:
+            face_recog.image_collection()
+            face_recog.training_mode()
+            # else:
+            #     print("Wrong Password.")
+            #     break
 
         elif choice == 2:
             face_recog.takePhoto()
-        
+
+        elif choice == 3:
+            print("Bye bye !")
+
         else:
             print("Invalid Choice. Please Try Again...")
         
