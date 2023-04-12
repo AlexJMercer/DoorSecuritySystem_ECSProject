@@ -99,7 +99,7 @@ def checkSpecialKeys():
     GPIO.output(L3, GPIO.HIGH)
 
     if (GPIO.input(C1) == 1):
-        print("Input reset!");
+        print("Input reset!")
         pressed = True
 
     GPIO.output(L3, GPIO.LOW)
