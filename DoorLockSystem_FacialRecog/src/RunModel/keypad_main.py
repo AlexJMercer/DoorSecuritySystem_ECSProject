@@ -8,9 +8,12 @@ import board
 import adafruit_character_lcd.character_lcd as characterlcd
 
 Password = '12345'
+SafePass = '42069'
+
 CurrPass = ""
-counter = 0
+flag = 0
 auth_token = False
+safe = False
 
 # Pin setup for keypad
 L1 = 5
@@ -21,7 +24,6 @@ L4 = 19
 C1 = 12
 C2 = 16
 C3 = 20
-Lock = 21
 
 # LCD setup
 lcd_columns = 16
@@ -42,7 +44,6 @@ lcd = characterlcd.Character_LCD_Mono(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6,
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
-GPIO.setup(Lock, GPIO.OUT)
 GPIO.setup(L1, GPIO.OUT)
 GPIO.setup(L2, GPIO.OUT)
 GPIO.setup(L3, GPIO.OUT)
@@ -51,7 +52,6 @@ GPIO.setup(L4, GPIO.OUT)
 GPIO.setup(C1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(C2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(C3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.output(Lock, GPIO.HIGH)
 
 
 class keypad:
@@ -61,25 +61,36 @@ class keypad:
 
     def getCode():
         return Password
+    
+    def checkSafe():
+        return safe
 
     def check(Code):
         global Password
         global auth_token
-        global counter
+        global flag
+        global safe
+        
+        auth_token = False
+        safe = False
+        
         if Password == Code:
+            auth_token = True
+       
+        elif SafePass == Code:
             lcd.clear()
             lcd.message = 'Welcome !!'
-            GPIO.output(Lock, GPIO.LOW)
-            time.sleep(10)
-            GPIO.output(Lock, GPIO.HIGH)
-            lcd.clear()
-            auth_token = True
+            print("\nSafe PIN triggered !")
+            print("Contacting the Police...\n")
+            time.sleep(3) 
+            safe = True
+        
         else:
             lcd.clear()
-            lcd.message = 'Wrong Password'
-            time.sleep(5)
+            lcd.message = 'Wrong PIN !'
+            time.sleep(3)
             lcd.clear()
-            counter = 1
+            flag = 1
 
         
 
@@ -95,7 +106,6 @@ class keypad:
                 keypad.check(CurrPass)
             else:
                 CurrPass = CurrPass + characters[0]
-                # print(CurrPass)        
                 lcd.message = CurrPass
         
         if(GPIO.input(C2) == 1):
@@ -107,7 +117,6 @@ class keypad:
                 keypad.check(CurrPass)
             else:
                 CurrPass = CurrPass + characters[1]
-                # print(CurrPass)        
                 lcd.message=CurrPass
         if(GPIO.input(C3) == 1):
             if characters[2] == '*':
@@ -118,21 +127,20 @@ class keypad:
                 keypad.check(CurrPass)
             else:
                 CurrPass = CurrPass + characters[2]
-                # print(CurrPass)        
                 lcd.message = CurrPass
     
         GPIO.output(line, GPIO.LOW)
 
     def getDeets():
-        global counter
-
-        #displaying input message
+        global flag
+        flag = 0
+        # Displaying input message
         lcd.clear()
         lcd.message = "Welcome,\nEnter Password : "
         time.sleep(5)
         lcd.clear()
         try:
-            while not auth_token and counter != 1:
+            while not auth_token and not safe and flag != 1:
                 keypad.readLine(L1, ["1","2","3"])
                 keypad.readLine(L2, ["4","5","6"])
                 keypad.readLine(L3, ["7","8","9"])
@@ -142,4 +150,3 @@ class keypad:
             print("\nApplication stopped!")
             GPIO.cleanup()
 
-            

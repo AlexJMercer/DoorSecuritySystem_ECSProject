@@ -1,5 +1,6 @@
 from face_recog import *
 from keypad_main import *
+from relayAuth import *
 
 training_img = face_recog.train_img_arr
 image_encodings = face_recog.train_img_encode
@@ -18,19 +19,21 @@ if __name__ == '__main__':
         choice = int(input())
         if choice == 1:
             # Enter password to confirm identity
-            # keypad.getDeets()
-            # if keypad.getAuthToken() == True:
-            face_recog.image_collection()
-            face_recog.training_mode()
-            # else:
-            #     print("Wrong Password.")
-            #     break
+            keypad.getDeets()
+            if keypad.getAuthToken() == True:
+                face_recog.image_collection()
+                face_recog.training_mode()
+            else:
+                print("Wrong Password.")
 
         elif choice == 2:
             face_recog.takePhoto()
+            keypad.getDeets()
+            relay.authenticator(face_recog.getFaceAuth(), keypad.getAuthToken(), keypad.checkSafe())
 
         elif choice == 3:
-            print("Bye bye !")
+            print("Exiting Application...")
+            time.sleep(1)
 
         else:
             print("Invalid Choice. Please Try Again...")

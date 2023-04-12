@@ -10,12 +10,12 @@ image_encodings = []
 class face_recog:
     def train_img_arr():
         return training_img
-    
-    
+        
     def train_img_encode():
         return image_encodings
 
-    
+    def getFaceAuth():
+        return faceAuth
     
     def image_collection():
         print("Enter image collection mode for training...")
@@ -34,6 +34,7 @@ class face_recog:
             key = cv.waitKey(1)
             if key == ord('q'):
                 print("Escaping Image Collection Mode")
+                time.sleep(0.5)
                 break
             elif key == ord(' '):
                 image_name = f"training-{img_counter}-img.jpg"
@@ -45,14 +46,17 @@ class face_recog:
         print("Exiting Image Collection mode...")
         cam.release()
         cv.destroyAllWindows()
+        time.sleep(0.5)
 
 
     def training_mode():
+        time.sleep(0.5)
         print("Now starting Training Mode")
+        time.sleep(0.5)
         path = os.getcwd() + "/DoorLockSystem_FacialRecog/src/user_img/"
 
         print("Loading images for training...")
-
+        time.sleep(0.5)
         for img in os.listdir(path):
             if (img.endswith(".jpg")):
                 name = img.split(".img")[0]
@@ -63,11 +67,12 @@ class face_recog:
                 image_encodings.append(encoding)
         
         print("Training Done !")
-
+        time.sleep(0.5)
 
 
     
     def takePhoto():
+        time.sleep(0.5)
         print("Opening Camera to take Photo...")
         cam = cv.VideoCapture(0)
         counter = 0
@@ -91,6 +96,7 @@ class face_recog:
 
         cam.release()
         cv.destroyAllWindows()
+        time.sleep(0.5)
         print("Exiting Photo Mode")
         time.sleep(1)
         print("Processing Image...")
@@ -100,8 +106,13 @@ class face_recog:
     def compareFaces(image):
         global faceAuth
 
+        time.sleep(0.5)
         print("Trying to recognize faces...\n")
-        face_encoding_unknown = fr.face_encodings(image)[0]
+        try:    
+            face_encoding_unknown = fr.face_encodings(image)[0]
+        except Exception:
+            print("No faces found in image.")
+            return
 
         if image_encodings == []:
             face_recog.build_arrays()
@@ -110,14 +121,14 @@ class face_recog:
 
         # Add loop to include all encodings into a single tuple
         for enc in image_encodings:
-            matches.append(fr.compare_faces(face_encoding_unknown, enc, 0.9))
+            matches.append(fr.compare_faces(face_encoding_unknown, enc))
 
         for match in matches:
             for m in match:
                 if m == True:
                     faceAuth = True
                     break
-
+        
         if faceAuth == True:
             print("Access Granted !")
         else:
